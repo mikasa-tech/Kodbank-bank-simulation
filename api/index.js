@@ -24,10 +24,18 @@ app.use(cors({
 // Database Pool
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('supabase')
+        ? { rejectUnauthorized: false }
+        : false
 });
 
 // Helper for DB queries
-const query = (text, params) => pool.query(text, params);
+const query = async (text, params) => {
+    if (!process.env.DATABASE_URL) {
+        throw new Error("Vercel Configuration Error: You are missing the 'DATABASE_URL' environment variable in your Vercel Project Settings. Add the Supabase connection string and Redeploy.");
+    }
+    return pool.query(text, params);
+};
 
 // 1. User Registration
 app.post('/api/register', async (req, res) => {
