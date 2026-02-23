@@ -1,4 +1,5 @@
 {
+    "name": "kodbank-app",
     "outputDirectory": "frontend/dist",
     "rewrites": [
         {
